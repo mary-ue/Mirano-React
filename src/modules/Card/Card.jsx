@@ -1,4 +1,5 @@
 import cn from 'classnames';
+import './Card.scss';
 
 export const Card = ({ className, img, title, dateDelivery, price }) => {
   return (

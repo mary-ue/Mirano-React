@@ -1,6 +1,7 @@
 import { Cart } from '../Cart/Cart';
 import { goodsArray } from '../../goodsArray';
 import { Card } from '../Card/Card';
+import './Goods.scss';
 
 export const Goods = () => {
   return (
