@@ -1,28 +1,22 @@
-import './CartItem.scss';
+import s from './CartItem.module.scss';
 
-export const CartItem = () => {
+export const CartItem = ({ img, title, price }) => {
   return (
-    <li className="cart__item">
-      <img
-        className="cart__img"
-        src="https://dull-rose-pawpaw.glitch.me/img/39.jpg"
-        alt="Букет из роз Grand Avalanche (101 шт)"
-      />
-      <h4 className="cart__item-title">
-        Букет из роз Grand Avalanche (101 шт)
-      </h4>
-      <div className="cart__counter">
-        <button className="cart__counter-btn">-</button>
+    <li className={s.item}>
+      <img className={s.img} src={img} alt={title} />
+      <h4 className={s.itemTitle}>{title}</h4>
+      <div className={s.counter}>
+        <button className={s.counterBtn}>-</button>
         <input
-          className="cart__counter-input"
+          className={s.counterInput}
           type="number"
           max="99"
           min="0"
           defaultValue="1"
         />
-        <button className="cart__counter-btn">+</button>
+        <button className={s.counterBtn}>+</button>
       </div>
-      <p className="cart__price">14800&nbsp;₽</p>
+      <p className={s.price}>{price}&nbsp;₽</p>
     </li>
   );
 };
