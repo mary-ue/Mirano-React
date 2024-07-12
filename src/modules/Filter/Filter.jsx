@@ -1,13 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Choices } from '../Choices/Choices';
 import './Filter.scss';
+import { useDispatch } from 'react-redux';
+import { fetchGoods } from '../../redux/goodsSlice';
+import { getValidFilters } from '../../utils';
 
 export const Filter = () => {
+  const dispatch = useDispatch();
   const [openChoice, setOpenChoice] = useState(null);
+
+  const [filters, setFilters] = useState({
+    type: 'bouquets',
+    minPrice: '',
+    maxPrice: '',
+    category: '',
+  });
 
   const handleChoicesToggle = (index) => {
     setOpenChoice(openChoice === index ? null : index);
   };
+
+  const handleTypeChange = ({ target }) => {
+    const { value } = target;
+    const newFilters = { ...filters, type: value };
+    setFilters(newFilters);
+  };
+
+  useEffect(() => {
+    const validFilter = getValidFilters(filters);
+    dispatch(fetchGoods(validFilter));
+  }, [filters, dispatch]);
 
   return (
     <section className="filter">
@@ -21,7 +43,8 @@ export const Filter = () => {
               name="type"
               defaultValue="bouquets"
               id="flower"
-              defaultChecked
+              checked={filters.type === 'bouquets'}
+              onChange={handleTypeChange}
             />
             <label
               className="filter__label filter__label_flower"
@@ -36,6 +59,8 @@ export const Filter = () => {
               name="type"
               defaultValue="toys"
               id="toys"
+              checked={filters.type === 'toys'}
+              onChange={handleTypeChange}
             />
             <label className="filter__label filter__label_toys" htmlFor="toys">
               Игрушки
@@ -47,6 +72,8 @@ export const Filter = () => {
               name="type"
               defaultValue="postcards"
               id="postcard"
+              checked={filters.type === 'postcards'}
+              onChange={handleTypeChange}
             />
             <label
               className="filter__label filter__label_postcard"
