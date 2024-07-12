@@ -1,9 +1,10 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import './Header.scss';
 import { toggleCart } from '../../redux/cartSlice';
 
 export const Header = () => {
   const dispatch = useDispatch();
+  const cardItemsCount = (useSelector(state => state.cart.items)).length
 
   const handlerCartToggle = () => {
     dispatch(toggleCart())
@@ -43,7 +44,7 @@ export const Header = () => {
         />
 
         <button className="header__cart-button" onClick={handlerCartToggle}>
-          0
+          {cardItemsCount}
         </button>
       </div>
     </header>
