@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Choices } from '../Choices/Choices';
 import './Filter.scss';
-import { useDispatch } from 'react-redux';
+import { useDispatch 3} from 'react-redux';
 import { fetchGoods } from '../../redux/goodsSlice';
-import { getValidFilters } from '../../utils';
+import { debounce, getValidFilters } from '../../utils';
 
 export const Filter = () => {
   const dispatch = useDispatch();
@@ -16,20 +16,45 @@ export const Filter = () => {
     category: '',
   });
 
+  const prevFiltersRef = useRef({});
+
+  const debouncedFetchGoods = useRef(
+    debounce((filters) => {
+      dispatch(fetchGoods(filters));
+    }, 300)
+  ).current;
+
+  useEffect(() => {
+    const prevFilters = prevFiltersRef.current;
+    const validFilter = getValidFilters(filters);
+
+    if (prevFilters.type !== filters.type) {
+      dispatch(fetchGoods(validFilter));
+    } else {
+      debouncedFetchGoods(filters);
+    }
+
+    prevFiltersRef.current = filters;
+  }, [filters, debouncedFetchGoods, dispatch]);
+
   const handleChoicesToggle = (index) => {
     setOpenChoice(openChoice === index ? null : index);
   };
 
   const handleTypeChange = ({ target }) => {
     const { value } = target;
-    const newFilters = { ...filters, type: value };
+    const newFilters = { ...filters, type: value, minPrice: '', maxPrice: '' };
     setFilters(newFilters);
   };
 
-  useEffect(() => {
-    const validFilter = getValidFilters(filters);
-    dispatch(fetchGoods(validFilter));
-  }, [filters, dispatch]);
+  const handlePriceChange = ({ target }) => {
+    const { name, value } = target;
+    const newFilters = {
+      ...filters,
+      [name]: !isNaN(parseInt(value, 10)) ? value : '',
+    };
+    setFilters(newFilters);
+  };
 
   return (
     <section className="filter">
@@ -95,12 +120,16 @@ export const Filter = () => {
                   type="text"
                   name="minPrice"
                   placeholder="от"
+                  value={filters.minPrice}
+                  onChange={handlePriceChange}
                 />
                 <input
                   className="filter__input-price"
                   type="text"
                   name="maxPrice"
                   placeholder="до"
+                  value={filters.maxPrice}
+                  onChange={handlePriceChange}
                 />
               </fieldset>
             </Choices>
