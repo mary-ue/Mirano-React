@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Choices } from '../Choices/Choices';
 import './Filter.scss';
-import { useDispatch 3} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { fetchGoods } from '../../redux/goodsSlice';
 import { debounce, getValidFilters } from '../../utils';
 
