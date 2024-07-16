@@ -23,7 +23,7 @@ export const App = () => {
 
   return (
     <>
-      <Header />
+      <Header setTitleGoods={setTitleGoods} />
       <main>
         <Hero />
         <Filter setTitleGoods={setTitleGoods} />
