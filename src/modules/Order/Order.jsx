@@ -2,17 +2,32 @@ import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import s from './Order.module.scss';
 import { closeModal } from '../../redux/orderSlice';
+import { useCallback, useEffect } from 'react';
 
 export const Order = () => {
   const dispatch = useDispatch();
   const isOrderReady = false;
   const isOpen = useSelector((state) => state.order.isOpen);
 
-  const handlerClose = (e) => {
-    if (e.target.matches(`.${s.order}`) || e.target.closest(`.${s.close}`)) {
-      dispatch(closeModal());
+  const handlerClose = useCallback(() => {
+    dispatch(closeModal());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        handlerClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEsc);
     }
-  };
+
+    return () => {
+      document.removeEventListener('keydown', handleEsc);
+    };
+  }, [isOpen, handlerClose]);
 
   if (!isOpen) return null;
 
