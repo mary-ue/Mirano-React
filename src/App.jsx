@@ -7,7 +7,7 @@ import { Hero } from './modules/Hero/Hero';
 import { Order } from './modules/Order/Order';
 import { Subscribe } from './modules/Subscribe/Subscribe';
 import { useDispatch } from 'react-redux';
-import { registerCart } from './redux/cartSlice';
+import { fetchCart, registerCart } from './redux/cartSlice';
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -16,6 +16,7 @@ export const App = () => {
   useEffect(() => {
     const initializeCart = async () => {
       await dispatch(registerCart());
+      await dispatch(fetchCart());
     }
 
     initializeCart()

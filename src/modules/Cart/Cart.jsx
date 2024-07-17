@@ -3,7 +3,7 @@ import { CartItem } from './CartItem/CartItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleCart } from '../../redux/cartSlice';
 import { openModal } from '../../redux/orderSlice';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 export const Cart = () => {
   const dispatch = useDispatch();
@@ -19,11 +19,10 @@ export const Cart = () => {
     dispatch(openModal());
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      cartRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [isOpen]);
+  const totalPrice = items.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
 
   if (!isOpen) return null;
 
@@ -71,7 +70,7 @@ export const Cart = () => {
           <button className="cart__order-btn" onClick={handlerOrderOpen}>
             Оформить
           </button>
-          <p className="cart__price cart__price_total">0&nbsp;₽</p>
+          <p className="cart__price cart__price_total">{totalPrice}&nbsp;₽</p>
         </div>
       </div>
     </section>
