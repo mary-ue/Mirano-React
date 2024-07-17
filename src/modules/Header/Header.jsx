@@ -3,6 +3,7 @@ import './Header.scss';
 import { toggleCart } from '../../redux/cartSlice';
 import { useState } from 'react';
 import { fetchGoods } from '../../redux/goodsSlice';
+import { changeType } from '../../redux/filtersSlice';
 
 export const Header = ({ setTitleGoods }) => {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ export const Header = ({ setTitleGoods }) => {
     dispatch(fetchGoods({search: searchValue}));
     setTitleGoods('Результат поиска');
     setSearchValue('');
+    dispatch(changeType(''));
   }
 
   return (

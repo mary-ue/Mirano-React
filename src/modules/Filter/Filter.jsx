@@ -29,10 +29,14 @@ export const Filter = ({ setTitleGoods }) => {
     const prevFilters = prevFiltersRef.current;
     const validFilter = getValidFilters(filters);
 
-    if (prevFilters.type !== filters.type) {
+    if (!validFilter.type) {
+      return;
+    }
+
+    if (prevFilters.type !== validFilter.type) {
       dispatch(fetchGoods(validFilter));
       setTitleGoods(
-        filterTypes.find((item) => item.value === filters.type).title
+        filterTypes.find((item) => item.value === validFilter.type).title
       );
     } else {
       debouncedFetchGoods(validFilter);

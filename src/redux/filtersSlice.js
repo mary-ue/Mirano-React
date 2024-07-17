@@ -18,7 +18,14 @@ const filtersSlice = createSlice({
       state.category = '';
     },
     changePrice(state, action) {
-      state[action.payload.name] = action.payload.value;
+      if (
+        !isNaN(
+          parseInt(action.payload.value) && isFinite(action.payload.value)
+        ) ||
+        action.payload.value === ''
+      ) {
+        state[action.payload.name] = action.payload.value;
+      }
     },
   },
 });
