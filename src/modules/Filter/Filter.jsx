@@ -13,7 +13,7 @@ const filterTypes = [
   { title: 'Открытки', value: 'postcards' },
 ];
 
-export const Filter = ({ setTitleGoods }) => {
+export const Filter = ({ setTitleGoods, filtersRef }) => {
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
   const [openChoice, setOpenChoice] = useState(null);
@@ -43,7 +43,7 @@ export const Filter = ({ setTitleGoods }) => {
     }
 
     prevFiltersRef.current = filters;
-  }, [filters, debouncedFetchGoods, dispatch]);
+  }, [filters, debouncedFetchGoods, setTitleGoods, dispatch]);
 
   const handleChoicesToggle = (index) => {
     setOpenChoice(openChoice === index ? null : index);
@@ -61,7 +61,7 @@ export const Filter = ({ setTitleGoods }) => {
   };
 
   return (
-    <section className="filter">
+    <section className="filter" ref={filtersRef}>
       <h2 className="visually-hidden"></h2>
       <div className="container">
         <form className="filter__form">

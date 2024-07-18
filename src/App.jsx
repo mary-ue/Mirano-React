@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Filter } from './modules/Filter/Filter';
 import { Footer } from './modules/Footer/Footer';
 import { Goods } from './modules/Goods/Goods';
@@ -12,22 +12,29 @@ import { fetchCart, registerCart } from './redux/cartSlice';
 export const App = () => {
   const dispatch = useDispatch();
   const [titleGoods, setTitleGoods] = useState('');
+  const filtersRef = useRef(null);
 
   useEffect(() => {
     const initializeCart = async () => {
       await dispatch(registerCart());
       await dispatch(fetchCart());
-    }
+    };
 
-    initializeCart()
+    initializeCart();
   }, [dispatch]);
+
+  const scrollToFilters = () => {
+    if (filtersRef.current) {
+      filtersRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <>
-      <Header setTitleGoods={setTitleGoods} />
+      <Header setTitleGoods={setTitleGoods} scrollToFilters={scrollToFilters} />
       <main>
         <Hero />
-        <Filter setTitleGoods={setTitleGoods} />
+        <Filter setTitleGoods={setTitleGoods} filtersRef={filtersRef} />
         <Goods title={titleGoods} />
         <Subscribe />
       </main>

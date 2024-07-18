@@ -1,7 +1,7 @@
 import { API_URL } from '../../../const';
 import s from './CartItem.module.scss';
 
-export const CartItem = ({ photoUrl, name, price, quantity }) => {
+export const CartItem = ({ id, photoUrl, name, price, quantity }) => {
   return (
     <li className={s.item}>
       <img className={s.img} src={`${API_URL}${photoUrl}`} alt={name} />
@@ -13,7 +13,7 @@ export const CartItem = ({ photoUrl, name, price, quantity }) => {
           type="number"
           max="99"
           min="0"
-          defaultValue={quantity}
+          value={quantity}
         />
         <button className={s.counterBtn}>+</button>
       </div>

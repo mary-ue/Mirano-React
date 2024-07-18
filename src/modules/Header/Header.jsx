@@ -5,22 +5,26 @@ import { useState } from 'react';
 import { fetchGoods } from '../../redux/goodsSlice';
 import { changeType } from '../../redux/filtersSlice';
 
-export const Header = ({ setTitleGoods }) => {
+export const Header = ({ setTitleGoods, scrollToFilters }) => {
   const dispatch = useDispatch();
-  const cartItemsCount = (useSelector(state => state.cart.items)).length;
+  const cartItemsCount = useSelector((state) => state.cart.items).reduce(
+    (acc, item) => item.quantity + acc,
+    0
+  );
   const [searchValue, setSearchValue] = useState('');
 
   const handlerCartToggle = () => {
-    dispatch(toggleCart())
-  }
+    dispatch(toggleCart());
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(fetchGoods({search: searchValue}));
+    dispatch(fetchGoods({ search: searchValue }));
     setTitleGoods('Результат поиска');
-    setSearchValue('');
     dispatch(changeType(''));
-  }
+    scrollToFilters();
+    setSearchValue('');
+  };
 
   return (
     <header className="header">
