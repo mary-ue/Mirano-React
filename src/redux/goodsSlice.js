@@ -3,14 +3,20 @@ import { API_URL } from '../const';
 
 export const fetchGoods = createAsyncThunk(
   'goods/fetchGoogs',
-  async (params) => {
-    const queryString = new URLSearchParams(params).toString();
+  async (params, thunkApi) => {
+    try {
+      const queryString = new URLSearchParams(params).toString();
 
-    const response = await fetch(
-      `${API_URL}/api/products${queryString ? `?${queryString}` : ''}`
-    );
-    
-    return await response.json();
+      const response = await fetch(
+        `${API_URL}/api/products${queryString ? `?${queryString}` : ''}`
+      );
+
+      return await response.json();
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        `${error.response.status}` - `${error.response.statusText}`
+      );
+    }
   }
 );
 
