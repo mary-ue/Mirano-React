@@ -1,17 +1,17 @@
 import { useDispatch, useSelector } from 'react-redux';
 import './Header.scss';
 import { toggleCart } from '../../redux/cartSlice';
-import { useState } from 'react';
-import { fetchGoods } from '../../redux/goodsSlice';
-import { changeType } from '../../redux/filtersSlice';
+import { useRef, useState } from 'react';
+import { changeSearch } from '../../redux/filtersSlice';
 
-export const Header = ({ setTitleGoods, scrollToFilters }) => {
+export const Header = () => {
   const dispatch = useDispatch();
   const cartItemsCount = useSelector((state) => state.cart.items).reduce(
     (acc, item) => item.quantity + acc,
     0
   );
   const [searchValue, setSearchValue] = useState('');
+  const searchInputRef = useRef(null);
 
   const handlerCartToggle = () => {
     dispatch(toggleCart());
@@ -19,10 +19,21 @@ export const Header = ({ setTitleGoods, scrollToFilters }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(fetchGoods({ search: searchValue }));
-    setTitleGoods('Результат поиска');
-    dispatch(changeType(''));
-    scrollToFilters();
+
+    if (searchValue.trim() !== '') {
+      searchInputRef.current.style.cssText = ``;
+      dispatch(changeSearch(searchValue));
+    } else {
+      searchInputRef.current.style.cssText = `
+        outline: 2px solid tomato;
+        outline-offset: 3px;
+      `;
+
+      setTimeout(() => {
+        searchInputRef.current.style.cssText = ``;
+      }, 2000);
+    }
+
     setSearchValue('');
   };
 
@@ -37,6 +48,7 @@ export const Header = ({ setTitleGoods, scrollToFilters }) => {
             placeholder="Букет из роз"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
+            ref={searchInputRef}
           />
 
           <button className="header__search-button" aria-label="начать поиск">

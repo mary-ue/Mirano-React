@@ -23,7 +23,7 @@ export const Filter = ({ setTitleGoods, filtersRef }) => {
   const filters = useSelector((state) => state.filters);
   const categories = useSelector((state) => state.goods.categories);
   const [openChoice, setOpenChoice] = useState(null);
-  const prevFiltersRef = useRef({});
+  const prevFiltersRef = useRef(filters);
 
   const debouncedFetchGoods = useRef(
     debounce((filters) => {
@@ -32,20 +32,32 @@ export const Filter = ({ setTitleGoods, filtersRef }) => {
   ).current;
 
   useEffect(() => {
-    const prevFilters = prevFiltersRef.current;
+    const prevMinPrice = prevFiltersRef.current.minPrice;
+    const prevMaxPrice = prevFiltersRef.current.maxPrice;
+
     const validFilter = getValidFilters(filters);
 
-    if (!validFilter.type) {
+    if (!validFilter.type && !validFilter.search) {
       return;
     }
 
-    if (prevFilters.type !== validFilter.type) {
-      dispatch(fetchGoods(validFilter));
-      setTitleGoods(
-        filterTypes.find((item) => item.value === validFilter.type).title
-      );
-    } else {
+    if (
+      prevMinPrice !== validFilter.minPrice ||
+      prevMaxPrice !== validFilter.maxPrice
+    ) {
       debouncedFetchGoods(validFilter);
+    } else {
+      dispatch(fetchGoods(validFilter));
+    }
+
+    const type = filterTypes.find((item) => item.value === validFilter.type);
+
+    if (type) {
+      setTitleGoods(type.title);
+    }
+
+    if (validFilter.search) {
+      setTitleGoods('Результат поиска');
     }
 
     prevFiltersRef.current = filters;
