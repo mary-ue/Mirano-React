@@ -28,21 +28,33 @@ export const fetchCart = createAsyncThunk('cart/fetchCart', async () => {
 
 export const addItemToCart = createAsyncThunk(
   'cart/addItemToCart',
-  async ({ productId, quantity }) => {
-    const response = await fetch(`${API_URL}/api/cart/items`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        "Content-Type": 'application/json',
-      },
-      body: JSON.stringify({ productId, quantity }),
-    });
+  async ({ productId, quantity }, { getState, rejectWithValue }) => {
+    try {
+      const state = getState();
+      const cartItems = state.cart.items;
 
-    if (!response.ok) {
-      throw new Error('Не удалось отправить товар в корзину');
+      if (isNaN(parseInt(quantity))) {
+        const cartItem = cartItems.find(item => item.id === productId);
+        quantity = cartItem ? cartItem.quantity + 1 : 1;
+      }
+
+      const response = await fetch(`${API_URL}/api/cart/items`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId, quantity }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Не удалось отправить товар в корзину');
+      }
+
+      return await response.json();
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
-
-    return await response.json();
   }
 );
 
@@ -75,7 +87,7 @@ const cartSlice = createSlice({
       .addCase(registerCart.rejected, (state, action) => {
         state.status = 'failed';
         state.accessKey = '';
-        state.error = action.error.message;
+        state.error = action.payload || action.error.message;
       })
 
       .addCase(fetchCart.pending, (state) => {
@@ -88,7 +100,7 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCart.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload || action.error.message;
       })
 
       .addCase(addItemToCart.pending, (state) => {
@@ -101,7 +113,7 @@ const cartSlice = createSlice({
       })
       .addCase(addItemToCart.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload || action.error.message;
       });
   },
 });

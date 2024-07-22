@@ -1,15 +1,20 @@
 import cn from 'classnames';
 import './Card.scss';
-import { useDispatch } from 'react-redux';
-import { addItemToCart } from '../../redux/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItemToCart, toggleCart } from '../../redux/cartSlice';
 import { useState } from 'react';
 
 export const Card = ({ className, id, img, title, dateDelivery, price }) => {
   const [buttonText, setButtonText] = useState(`${price}\u00A0₽`);
   const dispatch = useDispatch();
+  const isOpenCart = useSelector(state => state.cart.isOpen);
 
   const handlerAddToCart = () => {
-    dispatch(addItemToCart({ productId: id, quantity: 1 }));
+    dispatch(addItemToCart({ productId: id }));
+
+    if (!isOpenCart) {
+      dispatch(toggleCart());
+    }
   };
 
   const handleMouseEnter = () => {
