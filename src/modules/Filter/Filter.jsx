@@ -18,18 +18,24 @@ const filterTypes = [
   { title: 'Открытки', value: 'postcards' },
 ];
 
-export const Filter = ({ setTitleGoods, filtersRef }) => {
+export const Filter = ({ setTitleGoods }) => {
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
   const categories = useSelector((state) => state.goods.categories);
+  const goods = useSelector((state) => state.goods.items);
   const [openChoice, setOpenChoice] = useState(null);
   const prevFiltersRef = useRef(filters);
+  const filtersRef = useRef(null);
 
   const debouncedFetchGoods = useRef(
     debounce((filters) => {
       dispatch(fetchGoods(filters));
     }, 300)
   ).current;
+
+  useEffect(() => {
+    filtersRef.current.scrollIntoView({behavior: 'smooth'})
+  }, [goods]);
 
   useEffect(() => {
     const prevMinPrice = prevFiltersRef.current.minPrice;
