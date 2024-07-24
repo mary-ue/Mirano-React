@@ -3,6 +3,7 @@ import { Card } from '../Card/Card';
 import './Goods.scss';
 import { useSelector } from 'react-redux';
 import { API_URL } from '../../const';
+import { Preload } from '../Preload/Preload';
 
 export const Goods = ({title}) => {
   const {
@@ -14,7 +15,7 @@ export const Goods = ({title}) => {
   let content = null;
 
   if (goodsStatus === 'loading') {
-    content = <p>Loading...</p>;
+    content = <Preload />;
   }
 
   if (goodsStatus === 'success' && goods.length) {
@@ -45,7 +46,8 @@ export const Goods = ({title}) => {
   }
 
   return (
-    <section className="goods">
+    <section className="goods"
+    style={{ position: goodsStatus === 'loading' ? 'relative' : ''}}>
       <div className="container goods__container">
         <div className="goods__box">
           <h2 className="goods__title">{title}</h2>

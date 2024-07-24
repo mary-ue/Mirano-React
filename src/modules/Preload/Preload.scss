@@ -2,7 +2,7 @@
 @use "@scss/media" as *;
 
 .preload {
-  display: none;
+  display: flex;
   position: absolute;
   inset: 0;
 

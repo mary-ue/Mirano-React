@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleCart } from '../../redux/cartSlice';
 import { openModal } from '../../redux/orderSlice';
 import { useRef } from 'react';
+import { Preload } from '../Preload/Preload';
 
 export const Cart = () => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) => state.cart.isOpen);
   const items = useSelector((state) => state.cart.items);
+  const status = useSelector((state) => state.cart.status);
   const cartRef = useRef(null);
 
   const handlerCartClose = () => {
@@ -62,9 +64,15 @@ export const Cart = () => {
 
         <p className="cart__date-delivery">сегодня в 14:00</p>
 
-        <ul className="cart__list">
-          {items && items.map((item) => <CartItem key={item.id} {...item} />)}
-        </ul>
+        {status === 'loading' ? (
+          <div className="cart__preload">
+            <Preload />
+          </div>
+        ) : (
+          <ul className="cart__list">
+            {items && items.map((item) => <CartItem key={item.id} {...item} />)}
+          </ul>
+        )}
 
         <div className="cart__footer">
           <button

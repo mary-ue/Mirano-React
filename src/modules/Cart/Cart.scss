@@ -93,4 +93,9 @@
       opacity: 0.4;
     }
   }
+
+  &__preload {
+    position: relative;
+    flex-grow: 1;
+  }
 }
