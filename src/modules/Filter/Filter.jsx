@@ -22,7 +22,6 @@ export const Filter = ({ setTitleGoods }) => {
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
   const categories = useSelector((state) => state.goods.categories);
-  const goods = useSelector((state) => state.goods.items);
   const [openChoice, setOpenChoice] = useState(null);
   const prevFiltersRef = useRef(filters);
   const filtersRef = useRef(null);
@@ -34,8 +33,10 @@ export const Filter = ({ setTitleGoods }) => {
   ).current;
 
   useEffect(() => {
-    filtersRef.current.scrollIntoView({behavior: 'smooth'})
-  }, [goods]);
+    if (filters !== prevFiltersRef.current) {
+      filtersRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [filters]);
 
   useEffect(() => {
     const prevMinPrice = prevFiltersRef.current.minPrice;

@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import './Header.scss';
 import { toggleCart } from '../../redux/cartSlice';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { changeSearch } from '../../redux/filtersSlice';
+import { debounce } from '../../utils';
 
 export const Header = () => {
   const dispatch = useDispatch();
@@ -12,10 +13,28 @@ export const Header = () => {
   );
   const [searchValue, setSearchValue] = useState('');
   const searchInputRef = useRef(null);
+  const headerRef = useRef(null);
 
   const handlerCartToggle = () => {
     dispatch(toggleCart());
   };
+
+  useEffect(() => {
+    window.addEventListener(
+      'scroll',
+      debounce(() => {
+        const headerHeight = headerRef.current.getBoundingClientRect().height;
+
+        if (window.scrollY > headerHeight) {
+          headerRef.current.classList.add('header_fixed');
+          document.body.style.paddingTop = `${headerHeight}px`;
+        } else {
+          headerRef.current.classList.remove('header_fixed');
+          document.body.style.paddingTop = '';
+        }
+      }, 200)
+    );
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -38,7 +57,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="header">
+    <header className="header" ref={headerRef}>
       <div className="container header__container">
         <form className="header__form" action="#" onSubmit={handleSubmit}>
           <input
