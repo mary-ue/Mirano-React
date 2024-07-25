@@ -3,14 +3,16 @@ import { API_URL } from '../../../const';
 import s from './CartItem.module.scss';
 import { useState } from 'react';
 import { addItemToCart } from '../../../redux/cartSlice';
-import { debounce } from '../../../utils';
+import { debounce, isNumber } from '../../../utils';
 
 export const CartItem = ({ id, photoUrl, name, price, quantity }) => {
   const dispatch = useDispatch();
   const [inputQuantity, setInputQuantity] = useState(quantity);
 
   const debounceInputChange = debounce((newQuantity) => {
-    dispatch(addItemToCart({ productId: id, quantity: newQuantity }));
+    if (isNumber(newQuantity)) {
+      dispatch(addItemToCart({ productId: id, quantity: newQuantity }));
+    }
   }, 500);
 
   const handleInputChange = (e) => {
@@ -51,7 +53,9 @@ export const CartItem = ({ id, photoUrl, name, price, quantity }) => {
           +
         </button>
       </div>
-      <p className={s.price}>{price * inputQuantity}&nbsp;₽</p>
+      <p className={s.price}>
+        {inputQuantity ? price * inputQuantity : 0}&nbsp;₽
+      </p>
     </li>
   );
 };
