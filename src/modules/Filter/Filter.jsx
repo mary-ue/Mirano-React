@@ -4,7 +4,7 @@ import { Choices } from '../Choices/Choices';
 import './Filter.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGoods } from '../../redux/goodsSlice';
-import { debounce, getValidFilters } from '../../utils';
+import { debounce, getValidFilters, isNumber } from '../../utils';
 import { FilterRadio } from './FilterRadio';
 import {
   changeCategory,
@@ -90,9 +90,11 @@ export const Filter = ({ setTitleGoods }) => {
     setOpenChoice(-1);
   };
 
-  const handlePriceChange = ({ target }) => {
-    const { name, value } = target;
-    dispatch(changePrice({ name, value }));
+  const handlePriceChange = (e) => {
+    if (isNumber(e.nativeEvent.data)) {
+      const { name, value } = e.target;
+      dispatch(changePrice({ name, value }));
+    }
   };
 
   const handleCategoryChange = (category) => {
