@@ -33,6 +33,16 @@ export const Filter = ({ setTitleGoods }) => {
   ).current;
 
   useEffect(() => {
+    document.addEventListener('click', (e) => {
+      const target = e.target.closest('.filter__group_choices');
+
+      if (!target && (openChoice !== null || openChoice !== -1)) {
+        setOpenChoice(-1);
+      }
+    });
+  }, [openChoice]);
+
+  useEffect(() => {
     if (filters !== prevFiltersRef.current) {
       filtersRef.current.scrollIntoView({ behavior: 'smooth' });
     }
